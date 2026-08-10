@@ -64,10 +64,17 @@
         <div id="resumo-cruzado" class="summary"></div>
       </div>
       <button id="baixar" class="secondary hidden">Baixar relatório Excel</button>
+      <section id="incidente" class="incident hidden">
+        <h3>Sugestão de e-mail — incidente de dados</h3>
+        <p>Revise o texto, remova apontamentos que não devam ser encaminhados e copie-o para o novo e-mail. O texto informa que o relatório de ocorrências segue anexo.</p>
+        <textarea id="texto-incidente" aria-label="Sugestão de e-mail de incidente de dados"></textarea>
+        <button id="copiar-incidente" class="secondary" type="button">Copiar texto do e-mail</button>
+        <p id="status-copia" class="status" aria-live="polite"></p>
+      </section>
     </section>
     <section class="notice"><h2>Relatório</h2><p>O Excel contém LOG RESUMO, LOG DETALHAMENTO e REGRAS APLICADAS. As ocorrências são identificadas pelo número da linha e pelo APF.</p></section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="prioritarios-app.js?v=4"></script>
+  <script src="prioritarios-app.js?v=5"></script>
 </body>
 </html>
