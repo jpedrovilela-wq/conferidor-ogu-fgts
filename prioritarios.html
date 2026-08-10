@@ -52,16 +52,7 @@
         <div class="danger"><strong id="impeditivos">0</strong><span>erros impeditivos</span></div>
         <div class="warning"><strong id="atencoes">0</strong><span>apontamentos de atenção</span></div>
       </div>
-      <div id="resumo-principal" class="summary"></div>
-      </div>
-      <div id="resultado-cruzado" class="result-block hidden">
-        <h3>Conferência cruzada</h3>
-        <p class="muted">Comparação entre o arquivo principal e o arquivo complementar.</p>
-        <div class="metrics cross-metrics">
-          <div class="danger"><strong id="cruzado-impeditivos">0</strong><span>erros impeditivos</span></div>
-          <div class="warning"><strong id="cruzado-atencoes">0</strong><span>apontamentos de atenção</span></div>
-        </div>
-        <div id="resumo-cruzado" class="summary"></div>
+      <div id="resumo" class="summary"></div>
       </div>
       <button id="baixar" class="secondary hidden">Baixar relatório Excel</button>
       <section id="incidente" class="incident hidden">
@@ -75,6 +66,6 @@
     <section class="notice"><h2>Relatório</h2><p>O Excel contém LOG RESUMO, LOG DETALHAMENTO e REGRAS APLICADAS. As ocorrências são identificadas pelo número da linha e pelo APF.</p></section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="prioritarios-app.js?v=5"></script>
+  <script src="prioritarios-app.js?v=6"></script>
 </body>
 </html>
