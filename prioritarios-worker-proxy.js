@@ -1,4 +1,4 @@
-importScripts('prioritarios-worker.js?v=1');
+importScripts('prioritarios-worker.js?v=2');
 
 const baseHandler = self.onmessage;
 const send = self.postMessage.bind(self);
