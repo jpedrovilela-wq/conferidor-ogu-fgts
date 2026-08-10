@@ -1,4 +1,4 @@
-importScripts('prioritarios-worker.js?v=4');
+importScripts('prioritarios-worker.js?v=5');
 
 const baseHandler = self.onmessage;
 const send = self.postMessage.bind(self);
@@ -36,6 +36,7 @@ function sourceMap(raw, agent) {
     const january = value(row, 'Situação do Empreendimento em Janeiro do ano de referência');
     output.set(position + 2, {
       uf: canonical(value(row, 'UF')),
+      municipality: value(row, 'Município'),
       cep: trim(value(row, 'CEP do imóvel')),
       address: {
         'Logradouro do imóvel': trim(value(row, 'Logradouro do imóvel')),
@@ -107,6 +108,12 @@ function revise(message) {
       if (digits === 7) { row[2] = 'CEP com 7 dígitos fora da UF São Paulo.'; row[3] = 'ATENÇÃO'; row[5] = '8 dígitos ou 7 dígitos para UF São Paulo'; }
       else if (digits <= 6) { row[2] = 'CEP deve possuir 8 dígitos numéricos; excepcionalmente, são aceitos 7 dígitos para a UF São Paulo.'; row[5] = '8 dígitos numéricos, ou 7 dígitos para a UF São Paulo'; }
       else { row[2] = 'CEP deve possuir 7 ou 8 dígitos numéricos.'; row[5] = '8 dígitos ou 7 dígitos para UF São Paulo'; }
+    }
+    if (row[2] === 'Código IBGE do Município inválido.' && /^\d{6}$/.test(trim(row[4])) && self.ibgeMunicipios?.[trim(row[4])]) {
+      const [municipality, uf] = self.ibgeMunicipios[trim(row[4])];
+      if (canonical(meta?.municipality) !== canonical(municipality)) { row[2] = 'Município não corresponde ao Código IBGE.'; row[4] = meta?.municipality || ''; row[5] = municipality; }
+      else if (meta?.uf !== uf) { row[2] = 'UF não corresponde ao Código IBGE.'; row[4] = meta?.uf || ''; row[5] = uf; }
+      else continue;
     }
     if (row[2] === 'Código IBGE do Município inválido.' && /^0+$/.test(trim(row[4]))) row[2] = 'Código IBGE do Município inválido ou igual a Zero.';
     if (row[2] === 'Município não corresponde ao Código IBGE.') {

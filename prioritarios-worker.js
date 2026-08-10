@@ -1,5 +1,6 @@
 importScripts('ibge-municipios.js');
 Object.keys(IBGE_MUNICIPIOS).forEach(code=>{for(let digit=0;digit<10;digit++)IBGE_MUNICIPIOS[`${code}${digit}`]=IBGE_MUNICIPIOS[code]});
+self.ibgeMunicipios=IBGE_MUNICIPIOS;
 const clean=v=>String(v??'').trim(),norm=v=>clean(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(),key=v=>norm(v).replace(/[^A-Z0-9]+/g,' ');
 const date=v=>{const s=clean(v);if(/^\d+(?:\.\d+)?$/.test(s)){const serial=Number(s);if(serial>0&&serial<100000)return new Date(Date.UTC(1899,11,30)+Math.floor(serial)*86400000)}let m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)||s.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return null;const d=s[4]==='-'?new Date(+m[1],+m[2]-1,+m[3]):new Date(+m[3],+m[2]-1,+m[1]);return d&&!isNaN(d)&&d.getFullYear()===(s[4]==='-'?+m[1]:+m[3])?d:null};
 const num=v=>{const s=clean(v).replace(/\s/g,'');if(!s)return null;const c=s.lastIndexOf(','),p=s.lastIndexOf('.');let x=s;if(c>=0&&p>=0)x=c>p?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');else if(c>=0)x=s.replace(',','.');else if(/^-?\d{1,3}(\.\d{3})+$/.test(s))x=s.replace(/\./g,'');const n=Number(x);return Number.isFinite(n)?n:NaN};
