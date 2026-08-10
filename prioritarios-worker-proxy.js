@@ -83,7 +83,7 @@ function revise(message) {
       const digits = /^\d+$/.test(meta?.cep || '') ? meta.cep.length : 0;
       if (digits === 7 && meta.uf === 'SP') continue;
       if (digits === 7) { row[2] = 'CEP com 7 dígitos fora da UF São Paulo.'; row[3] = 'ATENÇÃO'; row[5] = '8 dígitos ou 7 dígitos para UF São Paulo'; }
-      else if (digits <= 6) { row[2] = 'CEP deve possuir ao menos 7 dígitos numéricos.'; row[5] = '7 ou 8 dígitos numéricos'; }
+      else if (digits <= 6) { row[2] = 'CEP deve possuir 8 dígitos numéricos; excepcionalmente, são aceitos 7 dígitos para a UF São Paulo.'; row[5] = '8 dígitos numéricos, ou 7 dígitos para a UF São Paulo'; }
       else { row[2] = 'CEP deve possuir 7 ou 8 dígitos numéricos.'; row[5] = '8 dígitos ou 7 dígitos para UF São Paulo'; }
     }
     if (row[2] === 'Código IBGE do Município inválido.' && /^0+$/.test(trim(row[4]))) row[2] = 'Código IBGE do Município inválido ou igual a Zero.';
