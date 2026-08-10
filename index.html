@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conferidor de Empreendimentos</title>
+  <title>Conferidor de Dados Habitacionais</title>
   <link rel="stylesheet" href="hub.css" />
 </head>
 <body>
   <main class="hub">
     <p class="eyebrow">Coordenação de Planejamento - DPP - SNH</p>
-    <h1>Conferidor de Empreendimentos</h1>
-    <p class="intro">Selecione o grupo de dados que deseja conferir.</p>
+    <h1>Conferidor de Dados Habitacionais</h1>
+    <p class="intro">Primeiro selecione o conjunto de dados; depois, a rotina desejada.</p>
     <fieldset class="selector">
-      <legend>Grupo de dados</legend>
-      <label><input type="radio" name="grupo" value="ogu" /> <span>OGU</span><small>Arquivo CSV ou TXT de empreendimentos</small></label>
-      <label><input type="radio" name="grupo" value="fgts" checked /> <span>FGTS</span><small>Arquivo CSV ou TXT de contratações</small></label>
-      <label><input type="radio" name="grupo" value="rcb" /> <span>Reforma Casa Brasil</span><small>Arquivo CSV ou TXT de contratações</small></label>
-      <label><input type="radio" name="grupo" value="prioritarios" /> <span>Dados Prioritários</span><small>Empreendimentos e entregas — Caixa e BB</small></label>
+      <legend>Conjunto de dados</legend>
+      <label><input type="radio" name="familia" value="casa-civil" checked /> <span>Dados Casa Civil</span><small>OGU, FGTS e Reforma Casa Brasil</small></label>
+      <label><input type="radio" name="familia" value="prioritarios" /> <span>Dados Prioritários</span><small>Empreendimentos e entregas por agente</small></label>
     </fieldset>
+    <fieldset id="opcoes-casa-civil" class="selector secondary-selector"><legend>Rotina Casa Civil</legend><label><input type="radio" name="rotina" value="ogu" /> <span>OGU</span><small>Empreendimentos</small></label><label><input type="radio" name="rotina" value="fgts" checked /> <span>FGTS</span><small>Contratações</small></label><label><input type="radio" name="rotina" value="rcb" /> <span>Reforma Casa Brasil</span><small>Contratações</small></label></fieldset>
+    <fieldset id="opcoes-prioritarios" class="selector secondary-selector hidden"><legend>Agente financeiro</legend><label><input type="radio" name="rotina" value="prioritarios-caixa" checked /> <span>CAIXA</span><small>Empreendimentos e entregas</small></label><label><input type="radio" name="rotina" value="prioritarios-bb" /> <span>Banco do Brasil</span><small>Empreendimentos e entregas</small></label></fieldset>
     <p id="arquivo-origem" class="intro"><strong>Arquivo esperado:</strong> envie o CSV ou TXT extraído de <code>view_exportar_fgts_casa_civil</code>.</p>
   </main>
   <iframe id="rotina" title="Rotina de conferência FGTS" src="fgts.html"></iframe>
-  <script src="hub.js?v=6"></script>
+  <script src="hub.js?v=7"></script>
 </body>
 </html>
