@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conferidor de Dados Habitacionais</title>
+  <title>Validador de Dados Habitacionais</title>
   <link rel="stylesheet" href="hub.css" />
   <link rel="stylesheet" href="background.css" />
+  <link rel="stylesheet" href="brand.css" />
 </head>
 <body>
   <main class="hub">
-    <p class="eyebrow">Coordenação de Planejamento - DPP - SNH</p>
-    <h1>Conferidor de Dados Habitacionais</h1>
+    <header class="brand-header">
+      <img class="brand-mcmv" src="assets/logo-minha-casa-minha-vida.png" alt="Minha Casa Minha Vida" />
+      <div class="brand-ministerio" aria-label="Ministério das Cidades — Secretaria Nacional de Habitação"><div><span>MINISTÉRIO DAS</span><strong>CIDADES</strong></div><b>SNH</b></div>
+    </header>
+    <h1>Validador de Dados Habitacionais</h1>
     <p class="intro">Primeiro selecione o conjunto de dados; depois, a rotina desejada.</p>
     <fieldset class="selector">
       <legend>Conjunto de dados</legend>
@@ -20,6 +24,7 @@
     <fieldset id="opcoes-casa-civil" class="selector secondary-selector"><legend>Rotina Casa Civil</legend><label><input type="radio" name="rotina" value="ogu" /> <span>OGU</span><small>Empreendimentos</small></label><label><input type="radio" name="rotina" value="fgts" checked /> <span>FGTS</span><small>Contratações</small></label><label><input type="radio" name="rotina" value="rcb" /> <span>Reforma Casa Brasil</span><small>Contratações</small></label></fieldset>
     <fieldset id="opcoes-prioritarios" class="selector secondary-selector hidden"><legend>Agente financeiro</legend><label><input type="radio" name="rotina" value="prioritarios-caixa" checked /> <span>CAIXA</span><small>Empreendimentos e entregas</small></label><label><input type="radio" name="rotina" value="prioritarios-bb" /> <span>Banco do Brasil</span><small>Empreendimentos e entregas</small></label></fieldset>
     <p id="arquivo-origem" class="intro"><strong>Arquivo esperado:</strong> envie o CSV ou TXT extraído de <code>view_exportar_fgts_casa_civil</code>.</p>
+    <div class="partner-logos" aria-label="Agentes financeiros: CAIXA e Banco do Brasil"><span>Agentes financeiros</span><img src="assets/logo-caixa.png" alt="CAIXA" /><img class="logo-bb" src="assets/logo-banco-do-brasil.png" alt="Banco do Brasil" /></div>
   </main>
   <iframe id="rotina" title="Rotina de conferência FGTS" src="fgts.html"></iframe>
   <script src="hub.js?v=7"></script>
