@@ -325,6 +325,12 @@ function renderIncident(logs) {
   $('incidente').classList.remove('hidden');
   $('status-copia').textContent = '';
 }
+function renderOguSummary(logs) {
+  if (!logs.length) { $('resumo').innerHTML = '<p class="muted">O processamento não identificou nenhuma inconsistência nos dados, baseando-se nas regras consideradas.</p>'; return; }
+  const totals = new Map();
+  logs.forEach(log => { const key = `${log.rule}|${log.level}`; totals.set(key, (totals.get(key) || 0) + 1); });
+  $('resumo').innerHTML = `<table><thead><tr><th>Regra</th><th>Ocorrências</th><th>Classificação</th></tr></thead><tbody>${Array.from(totals, ([key, count]) => { const [rule, level] = key.split('|'); return `<tr><td>${rule}</td><td>${count}</td><td>${level}</td></tr>`; }).join('')}</tbody></table>`;
+}
 async function copyIncident() {
   const field = $('texto-incidente');
   try { await navigator.clipboard.writeText(field.value); }
@@ -432,9 +438,10 @@ function processFile() {
         $('alteracoes').textContent = changes.length.toLocaleString('pt-BR');
         $('resultado').classList.remove('hidden');
         $('baixar').classList.remove('hidden');
-        renderIncident(logs);
+        renderOguSummary(logs);
+        if (logs.length) renderIncident(logs); else $('incidente').classList.add('hidden');
         status.className = 'status ok';
-        status.textContent = 'Conferência concluída. O Excel contém somente as abas de análise.';
+        status.textContent = logs.length ? 'Conferência concluída. O Excel contém somente as abas de análise.' : 'Conferência concluída. Nenhuma inconsistência foi identificada; baixe o Excel para consultar as regras consideradas.';
       };
       let rowIndex = 0, warningIndex = 0;
       const processWarnings = () => {
@@ -517,7 +524,6 @@ function styleSheet(ws, rows) {
 
 function downloadReport() {
   const status = $('status');
-  if (!reportLogs.length && !reportChanges.length) return;
   try {
     status.className = 'status';
     status.textContent = 'Gerando o relatório Excel…';
