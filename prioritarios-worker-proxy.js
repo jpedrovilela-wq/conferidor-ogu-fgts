@@ -85,37 +85,45 @@ function crossLine(rule, subject, line) {
   return `${source} — linha ${line}`;
 }
 
-function detailedRules(agent) {
+function detailedRules(agent, subject, hasCompanion) {
   const modality = agent === 'caixa' ? 'FAR, RURAL ou ENTIDADES.' : 'FAR ou RURAL.';
-  return [
-    [1, 'Estrutura — todos os arquivos', 'Os cabeçalhos obrigatórios devem existir e corresponder ao tipo de tabela e ao agente financeiro selecionados.', 'IMPEDITIVO'],
-    [2, 'Data de Movimento', 'Deve ser uma data válida e ter o mesmo valor em todas as linhas da tabela analisada.', 'IMPEDITIVO'],
-    [3, 'Agente Financeiro; APF', 'O agente financeiro deve coincidir com a seleção. APF deve conter apenas algarismos; em Contratação não pode se repetir.', 'IMPEDITIVO'],
-    [4, 'Contratação — UF; Código IBGE do Município; Município', 'UF deve ser válida. O Código IBGE deve existir na base territorial e pode ter 6 ou 7 dígitos. Município e UF devem corresponder ao código.', 'IMPEDITIVO'],
-    [5, 'Contratação — Município', 'Diferenças apenas de caixa, acentuação ou grafia muito próxima são aceitas. Divergências relevantes são ATENÇÃO; divergências sem relação com o Município oficial são IMPEDITIVO.', 'ATENÇÃO / IMPEDITIVO'],
-    [6, 'Contratação — Município', 'Se forem informados vários Municípios e um deles corresponder ao Código IBGE, registrar uma única ocorrência de ATENÇÃO.', 'ATENÇÃO'],
-    [7, 'Contratação — Nome Empreendimento', 'Não pode estar em branco.', 'IMPEDITIVO'],
-    [8, 'Contratação — Modalidade', `Deve pertencer à lista permitida: ${modality}`, 'IMPEDITIVO'],
-    [9, 'Contratação — Situação do Empreendimento; Situação em janeiro', 'Devem pertencer à lista consolidada específica do agente financeiro.', 'IMPEDITIVO'],
-    [10, 'Contratação — Detalhamento da Situação; Detalhamento em janeiro', 'Devem pertencer à lista consolidada de detalhamentos permitidos.', 'IMPEDITIVO'],
-    [11, 'Contratação — Data de Contratação', 'Deve ser uma data válida e não pode ser posterior à Data de Movimento.', 'IMPEDITIVO'],
-    [12, 'Contratação — % Exec', 'Deve ser numérico e estar entre 0 e 100.', 'IMPEDITIVO'],
-    [13, 'Contratação — Valor Contratado; Valor Desembolsado', 'Devem ser numéricos e não negativos. Valor Contratado igual a zero é ATENÇÃO.', 'IMPEDITIVO / ATENÇÃO'],
-    [14, 'Contratação — Valor Aporte Adicional', 'Pode ficar em branco. Se preenchido, deve ser numérico e não negativo.', 'IMPEDITIVO'],
-    [15, 'Contratação — Valor Desembolsado; Valor Contratado; Valor Aporte Adicional', 'Valor Desembolsado não pode superar a soma de Valor Contratado e Valor Aporte Adicional, considerada tolerância de R$ 1,00.', 'IMPEDITIVO'],
-    [16, 'Contratação — UH Contratadas; UH Entregues; UH Vigentes', 'Devem ser inteiras e não negativas. UH Entregues não pode superar UH Contratadas; UH Vigentes deve corresponder a UH Contratadas menos UH Entregues.', 'IMPEDITIVO'],
-    [17, 'Contratação — campos históricos de UH e Valor Desembolsado do ano de referência', 'Quando preenchidos, os campos quantitativos devem ser inteiros e não negativos; o valor deve ser numérico e não negativo.', 'IMPEDITIVO'],
-    [18, 'Contratação — Data da previsão da entrega', 'Quando preenchida, deve ser uma data válida e posterior à Data de Contratação.', 'IMPEDITIVO'],
-    [19, 'Contratação — Unidades Habitacionais a serem entregues', 'Quando preenchido, deve ser inteiro e não negativo.', 'IMPEDITIVO'],
-    [20, 'Contratação — CEP do imóvel', 'O padrão é 8 dígitos. Excepcionalmente, são aceitos 7 dígitos para a UF São Paulo; fora de São Paulo, 7 dígitos é ATENÇÃO.', 'IMPEDITIVO / ATENÇÃO'],
-    [21, 'Contratação — Logradouro; Número do imóvel; Bairro', 'Se algum desses campos estiver em branco, registrar uma única ocorrência de endereço incompleto por linha.', 'ATENÇÃO'],
-    [22, 'Entregas — DT_ENTREGA / DT_ASS_DOC', 'A data de entrega deve ser válida e não pode ser posterior à Data de Movimento. Para Banco do Brasil, DT_ASS_DOC é tratado como DT_ENTREGA.', 'IMPEDITIVO'],
-    [23, 'Entregas — QT_UH_ENTREGUES / Número de Unidades Entregues', 'A quantidade deve ser inteira e maior que zero. Para Banco do Brasil, Número de Unidades Entregues é tratado como QT_UH_ENTREGUES.', 'IMPEDITIVO'],
-    [24, 'Entregas — APF; Data de entrega', 'A combinação de APF e Data de Entrega não pode se repetir.', 'IMPEDITIVO'],
-    [25, 'Conferência cruzada — Data de Movimento', 'Os arquivos de Contratação e Entregas devem possuir a mesma Data de Movimento.', 'IMPEDITIVO'],
-    [26, 'Conferência cruzada — APF', 'Cada APF de Entregas deve existir em Contratação. APFs com UH Entregues em Contratação devem possuir registro em Entregas.', 'ATENÇÃO'],
-    [27, 'Conferência cruzada — UH Entregues; UH Contratadas', 'A soma das entregas por APF deve corresponder a UH Entregues e não pode superar UH Contratadas.', 'ATENÇÃO / IMPEDITIVO']
+  const common = [
+    ['Estrutura', 'Os cabeçalhos obrigatórios devem existir e corresponder ao tipo de tabela e ao agente financeiro selecionados.', 'IMPEDITIVO'],
+    ['Data de Movimento', 'Deve ser uma data válida e ter o mesmo valor em todas as linhas da tabela analisada.', 'IMPEDITIVO'],
+    ['Agente Financeiro; APF', `O agente financeiro deve coincidir com a seleção. APF deve conter apenas algarismos${subject === 'empreendimentos' ? ' e não pode se repetir.' : '.'}`, 'IMPEDITIVO']
   ];
+  const contracting = [
+    ['UF; Código IBGE do Município; Município', 'UF deve ser válida. O Código IBGE deve existir na base territorial e pode ter 6 ou 7 dígitos. Município e UF devem corresponder ao código.', 'IMPEDITIVO'],
+    ['Município', 'Diferenças apenas de caixa, acentuação ou grafia muito próxima são aceitas. Divergências relevantes são ATENÇÃO; divergências sem relação com o Município oficial são IMPEDITIVO.', 'ATENÇÃO / IMPEDITIVO'],
+    ['Município', 'Se forem informados vários Municípios e um deles corresponder ao Código IBGE, registrar uma única ocorrência de ATENÇÃO.', 'ATENÇÃO'],
+    ['Nome Empreendimento', 'Não pode estar em branco.', 'IMPEDITIVO'],
+    ['Modalidade', `Deve pertencer à lista permitida: ${modality}`, 'IMPEDITIVO'],
+    ['Situação do Empreendimento; Situação em janeiro', 'Devem pertencer à lista consolidada específica do agente financeiro.', 'IMPEDITIVO'],
+    ['Detalhamento da Situação; Detalhamento em janeiro', 'Devem pertencer à lista consolidada de detalhamentos permitidos.', 'IMPEDITIVO'],
+    ['Data de Contratação', 'Deve ser uma data válida e não pode ser posterior à Data de Movimento.', 'IMPEDITIVO'],
+    ['% Exec', 'Deve ser numérico e estar entre 0 e 100.', 'IMPEDITIVO'],
+    ['Valor Contratado; Valor Desembolsado', 'Devem ser numéricos e não negativos. Valor Contratado igual a zero é ATENÇÃO.', 'IMPEDITIVO / ATENÇÃO'],
+    ['Valor Aporte Adicional', 'Pode ficar em branco. Se preenchido, deve ser numérico e não negativo.', 'IMPEDITIVO'],
+    ['Valor Desembolsado; Valor Contratado; Valor Aporte Adicional', 'Valor Desembolsado não pode superar a soma de Valor Contratado e Valor Aporte Adicional, considerada tolerância de R$ 1,00.', 'IMPEDITIVO'],
+    ['UH Contratadas; UH Entregues; UH Vigentes', 'Devem ser inteiras e não negativas. UH Entregues não pode superar UH Contratadas; UH Vigentes deve corresponder a UH Contratadas menos UH Entregues.', 'IMPEDITIVO'],
+    ['Campos históricos de UH e Valor Desembolsado do ano de referência', 'Quando preenchidos, os campos quantitativos devem ser inteiros e não negativos; o valor deve ser numérico e não negativo.', 'IMPEDITIVO'],
+    ['Data da previsão da entrega', 'Quando preenchida, deve ser uma data válida e posterior à Data de Contratação.', 'IMPEDITIVO'],
+    ['Unidades Habitacionais a serem entregues', 'Quando preenchido, deve ser inteiro e não negativo.', 'IMPEDITIVO'],
+    ['CEP do imóvel', 'O padrão é 8 dígitos. Excepcionalmente, são aceitos 7 dígitos para a UF São Paulo; fora de São Paulo, 7 dígitos é ATENÇÃO.', 'IMPEDITIVO / ATENÇÃO'],
+    ['Logradouro; Número do imóvel; Bairro', 'Se algum desses campos estiver em branco, registrar uma única ocorrência de endereço incompleto por linha.', 'ATENÇÃO']
+  ];
+  const deliveries = [
+    ['DT_ENTREGA / DT_ASS_DOC', 'A data de entrega deve ser válida e não pode ser posterior à Data de Movimento. Para Banco do Brasil, DT_ASS_DOC é tratado como DT_ENTREGA.', 'IMPEDITIVO'],
+    ['QT_UH_ENTREGUES / Número de Unidades Entregues', 'A quantidade deve ser inteira e maior que zero. Para Banco do Brasil, Número de Unidades Entregues é tratado como QT_UH_ENTREGUES.', 'IMPEDITIVO'],
+    ['APF; Data de entrega', 'A combinação de APF e Data de Entrega não pode se repetir.', 'IMPEDITIVO']
+  ];
+  const crossing = [
+    ['Data de Movimento', 'Os arquivos de Contratação e Entregas devem possuir a mesma Data de Movimento.', 'IMPEDITIVO'],
+    ['APF', 'Cada APF de Entregas deve existir em Contratação. APFs com UH Entregues em Contratação devem possuir registro em Entregas.', 'ATENÇÃO'],
+    ['UH Entregues; UH Contratadas', 'A soma das entregas por APF deve corresponder a UH Entregues e não pode superar UH Contratadas.', 'ATENÇÃO / IMPEDITIVO']
+  ];
+  const selected = [...common, ...(subject === 'empreendimentos' ? contracting : deliveries), ...(hasCompanion ? crossing : [])];
+  return selected.map((rule, index) => [index + 1, rule[0], rule[1], rule[2]]);
 }
 
 function rebuild(message) {
@@ -136,7 +144,7 @@ function revise(message) {
   if (message.type !== 'complete' || !requestData?.primary) return message;
   const info = sourceMap(requestData.primary, requestData.agente);
   message.reference = referenceDate(requestData.primary);
-  message.rules = detailedRules(requestData.agente);
+  message.rules = detailedRules(requestData.agente, requestData.assunto, Boolean(requestData.companion));
   const revised = [], incompleteAddresses = new Set();
   for (const original of message.rows) {
     const row = [...original], meta = info.get(Number(row[0]));
