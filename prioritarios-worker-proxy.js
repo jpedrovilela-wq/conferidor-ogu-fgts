@@ -1,4 +1,4 @@
-importScripts('prioritarios-worker.js?v=5');
+importScripts('prioritarios-worker.js?v=6');
 
 const baseHandler = self.onmessage;
 const send = self.postMessage.bind(self);
@@ -7,6 +7,7 @@ let requestData = null;
 const trim = value => String(value ?? '').trim();
 const canonical = value => trim(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[’'`´.\-]/g, '').replace(/\s+/g, ' ');
 const cityPair = (actual, expected) => `${canonical(actual)}|${canonical(expected)}`;
+const listedMunicipalities = value => String(value ?? '').split(/[\/;|]/).map(canonical).filter(Boolean);
 const attentionPairs = new Set([
   cityPair('SERIDÓ', 'São Vicente do Seridó'),
   cityPair('EMBU', 'Embu das Artes'),
@@ -117,9 +118,15 @@ function revise(message) {
     }
     if (row[2] === 'Código IBGE do Município inválido.' && /^0+$/.test(trim(row[4]))) row[2] = 'Código IBGE do Município inválido ou igual a Zero.';
     if (row[2] === 'Município não corresponde ao Código IBGE.') {
+      const municipalities = listedMunicipalities(row[4]);
+      if (municipalities.length > 1 && municipalities.includes(canonical(row[5]))) {
+        row[2] = 'Foram informados mais de um Município no campo Município; um deles corresponde ao Código IBGE.';
+        row[3] = 'ATENÇÃO';
+      } else {
       const score = similarity(row[4], row[5]);
       if (canonical(row[4]) === canonical(row[5]) || score >= .92) continue;
       if (attentionPairs.has(cityPair(row[4], row[5])) || score >= .74) { row[2] = 'Nome do Município possui divergência relevante em relação ao Código IBGE.'; row[3] = 'ATENÇÃO'; }
+      }
     }
     revised.push(row);
   }
