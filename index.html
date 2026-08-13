@@ -3,23 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Validador de Dados Habitacionais</title>
+  <title>Hub de Dados Habitacionais</title>
   <link rel="stylesheet" href="hub.css" />
   <link rel="stylesheet" href="background.css?v=10" />
 </head>
 <body class="shell">
   <main class="hub">
-    <p class="eyebrow">Coordenação de Planejamento - DPP - SNH</p>
-    <h1>Validador de Dados Habitacionais</h1>
-    <p class="intro">Primeiro selecione o conjunto de dados; depois, a rotina desejada.</p>
-    <fieldset class="selector">
+    <section class="hero" aria-labelledby="titulo-principal">
+      <div class="hero-content">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i></span><span>Dados Habitacionais</span></div>
+        <p class="eyebrow">Coordenação de Planejamento · DPP · SNH</p>
+        <h1 id="titulo-principal"><em>Hub de Gestão</em><span>Validação e inteligência para dados habitacionais</span></h1>
+        <p class="intro">Conferências consistentes para apoiar o acompanhamento de empreendimentos, contratações e entregas dos programas habitacionais.</p>
+        <p class="hero-note">Selecione o conjunto de dados e a rotina que deseja executar.</p>
+      </div>
+    </section>
+    <section class="selection-panel" aria-label="Escolha da rotina">
+      <fieldset class="selector">
       <legend>Conjunto de dados</legend>
       <label><input type="radio" name="familia" value="casa-civil" checked /> <span>Dados Casa Civil</span><small>OGU, FGTS e Reforma Casa Brasil</small></label>
       <label><input type="radio" name="familia" value="prioritarios" /> <span>Dados Prioritários</span><small>Empreendimentos e entregas por agente</small></label>
-    </fieldset>
-    <fieldset id="opcoes-casa-civil" class="selector secondary-selector"><legend>Rotina Casa Civil</legend><label><input type="radio" name="rotina" value="ogu" /> <span>OGU</span><small>Empreendimentos</small></label><label><input type="radio" name="rotina" value="fgts" checked /> <span>FGTS</span><small>Contratações</small></label><label><input type="radio" name="rotina" value="rcb" /> <span>Reforma Casa Brasil</span><small>Contratações</small></label></fieldset>
-    <fieldset id="opcoes-prioritarios" class="selector secondary-selector hidden"><legend>Agente financeiro</legend><label><input type="radio" name="rotina" value="prioritarios-caixa" checked /> <span>CAIXA</span><small>Empreendimentos e entregas</small></label><label><input type="radio" name="rotina" value="prioritarios-bb" /> <span>Banco do Brasil</span><small>Empreendimentos e entregas</small></label></fieldset>
-    <p id="arquivo-origem" class="intro"><strong>Arquivo esperado:</strong> envie o CSV ou TXT extraído de <code>view_exportar_fgts_casa_civil</code>.</p>
+      </fieldset>
+      <fieldset id="opcoes-casa-civil" class="selector secondary-selector"><legend>Rotina Casa Civil</legend><label><input type="radio" name="rotina" value="ogu" /> <span>OGU</span><small>Empreendimentos</small></label><label><input type="radio" name="rotina" value="fgts" checked /> <span>FGTS</span><small>Contratações</small></label><label><input type="radio" name="rotina" value="rcb" /> <span>Reforma Casa Brasil</span><small>Contratações</small></label></fieldset>
+      <fieldset id="opcoes-prioritarios" class="selector secondary-selector hidden"><legend>Agente financeiro</legend><label><input type="radio" name="rotina" value="prioritarios-caixa" checked /> <span>CAIXA</span><small>Empreendimentos e entregas</small></label><label><input type="radio" name="rotina" value="prioritarios-bb" /> <span>Banco do Brasil</span><small>Empreendimentos e entregas</small></label></fieldset>
+      <p id="arquivo-origem" class="intro file-hint"><strong>Arquivo esperado:</strong> envie o CSV ou TXT extraído de <code>view_exportar_fgts_casa_civil</code>.</p>
+    </section>
   </main>
   <iframe id="rotina" title="Rotina de conferência FGTS" src="fgts.html"></iframe>
   <script src="hub.js?v=7"></script>
