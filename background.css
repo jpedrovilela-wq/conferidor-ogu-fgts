@@ -1,1 +1,1 @@
-body.shell{background:#eef3f4}html.frame,html.frame body{background:transparent!important}
+body.shell{min-height:100vh;background:#dcebf1 url("assets/hero-habitacao-social-v2.png") center center/cover fixed no-repeat}body.shell:before{position:fixed;z-index:-1;inset:0;content:"";background:linear-gradient(135deg,rgba(240,249,251,.7),rgba(229,241,238,.4))}html.frame,html.frame body{background:transparent!important}@media(max-width:700px){body.shell{background-attachment:scroll;background-position:66% center}}
