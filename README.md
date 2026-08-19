@@ -18,7 +18,7 @@ Os dados enviados não são transferidos para servidor algum. A conferência oco
 - Verificações de estrutura, chaves, datas, valores, listas permitidas e coerências de negócio.
 - O valor da compra deve ser maior ou igual ao valor financiado.
 - A base territorial do **IBGE — DTB 2024** está incorporada ao aplicativo. O sistema valida o código IBGE de seis dígitos usado no CSV, o município e a sigla da UF de forma integrada.
-- As ocorrências são classificadas como `IMPEDITIVO` ou `ATENÇÃO`.
+- As ocorrências são classificadas como `PRIORITÁRIO` ou `SECUNDÁRIO`.
 
 O detalhamento do FGTS usa o Código de Agrupamento SNH para localizar o registro correspondente no CSV original.
 

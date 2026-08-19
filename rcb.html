@@ -20,13 +20,13 @@
     </section>
     <section id="resultado" class="card hidden">
       <h2>Resultado</h2>
-      <div class="metrics"><div><strong id="registros">0</strong><span>registros analisados</span></div><div class="danger"><strong id="impeditivos">0</strong><span>erros impeditivos</span></div><div class="warning"><strong id="atencoes">0</strong><span>apontamentos de atenção</span></div></div>
+      <div class="metrics"><div><strong id="registros">0</strong><span>registros analisados</span></div><div class="danger"><strong id="impeditivos">0</strong><span>ocorrências prioritárias</span></div><div class="warning"><strong id="atencoes">0</strong><span>ocorrências secundárias</span></div></div>
       <button id="baixar" class="secondary hidden">Baixar relatório Excel</button><div id="resumo" class="summary"></div>
       <section id="incidente" class="incident hidden"><h3>Sugestão de e-mail — incidente de dados</h3><p>Revise o texto, remova apontamentos que não devam ser encaminhados e copie-o para o novo e-mail.</p><textarea id="texto-incidente" aria-label="Sugestão de e-mail de incidente de dados"></textarea><button id="copiar-incidente" class="secondary" type="button">Copiar texto do e-mail</button><p id="status-copia" class="status" aria-live="polite"></p></section>
     </section>
     <section class="notice"><h2>O relatório contém</h2><p>O Excel contém as abas LOG RESUMO, LOG DETALHAMENTO e REGRAS APLICADAS. Use o número da linha para localizar a ocorrência no arquivo original.</p></section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="rcb-app.js?v=6"></script>
+  <script src="rcb-app.js?v=7"></script>
 </body>
 </html>

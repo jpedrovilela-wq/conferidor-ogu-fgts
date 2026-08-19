@@ -7,6 +7,8 @@ const K = (n) => COLUMNS.find(x => x.includes(`_${String(n).padStart(2, '0')}_`)
 const TEXT = [4,7,8,10,11,12,13,14,15,27,28,29,32,34,35,36,37,40,41,42,44,45,47,48];
 const NUM = [3,5,6,17,18,19,20,21,22,23,24,25,30,31,33,38,39,46,49,50,51];
 const IMP = 'IMPEDITIVO', ACE = 'ATENÇÃO';
+const classificationLabel = level => level === IMP ? 'PRIORITÁRIO' : level === ACE ? 'SECUNDÁRIO' : level;
+const displayRuleText = value => String(value).replaceAll('IMPEDITIVO','PRIORITÁRIO').replaceAll('ATENÇÃO','SECUNDÁRIO');
 const ERR_VALUES = ['#N/D','#NOME?','#VALOR!','#REF!','#DIV/0!'];
 const allowed = {
   12:['Faixa 1'],13:['Entidades','FAR','FAR - Compra Assistida','FNHIS','Oferta Pública','Rural'],
@@ -329,7 +331,7 @@ function renderOguSummary(logs) {
   if (!logs.length) { $('resumo').innerHTML = '<p class="muted">O processamento não identificou nenhuma inconsistência nos dados, baseando-se nas regras consideradas.</p>'; return; }
   const totals = new Map();
   logs.forEach(log => { const key = `${log.rule}|${log.level}`; totals.set(key, (totals.get(key) || 0) + 1); });
-  $('resumo').innerHTML = `<table><thead><tr><th>Regra</th><th>Ocorrências</th><th>Classificação</th></tr></thead><tbody>${Array.from(totals, ([key, count]) => { const [rule, level] = key.split('|'); return `<tr><td>${rule}</td><td>${count}</td><td>${level}</td></tr>`; }).join('')}</tbody></table>`;
+  $('resumo').innerHTML = `<table><thead><tr><th>Regra</th><th>Ocorrências</th><th>Classificação</th></tr></thead><tbody>${Array.from(totals, ([key, count]) => { const [rule, level] = key.split('|'); return `<tr><td>${rule}</td><td>${count}</td><td>${classificationLabel(level)}</td></tr>`; }).join('')}</tbody></table>`;
 }
 async function copyIncident() {
   const field = $('texto-incidente');
@@ -383,14 +385,14 @@ function createLogSheets(wb, logs, changes) {
   });
   const summary = [['Regra não atendida','Quantidade de linhas','Classificação'], ...Array.from(grouped, ([key,count]) => {
     const [rule, level] = key.split('|');
-    return [rule, count, level];
+    return [rule, count, classificationLabel(level)];
   })];
   const detail = [['Regra não atendida','Código da Operação SNH','Classificação','Valor discrepante','Valor(es) esperado(s)'], ...logs.map(log => {
     const [actual, expected] = log.actual === undefined ? logDetails(log.line, log.rule) : [log.actual, log.expected];
-    return [log.rule, log.operation, log.level, actual, expected];
+    return [log.rule, log.operation, classificationLabel(log.level), actual, expected];
   })];
   const changesRows = [['Número da linha alterada','Alteração identificada','Justificativa'], ...changes];
-  const rulesRows = [['Número da regra','Coluna','Regra'], ...RULES_SHEET.map((rule, index) => [index + 1, ...rule])];
+  const rulesRows = [['Número da regra','Coluna','Regra'], ...RULES_SHEET.map((rule, index) => [index + 1, rule[0], displayRuleText(rule[1])])];
   [['LOG RESUMO',summary],['LOG DETALHAMENTO',detail],['ALTERAÇÕES',changesRows],['REGRAS',rulesRows]].forEach(([name, rows]) => {
     const ws = XLSX.utils.aoa_to_sheet(rows);
     styleSheet(ws, rows);
@@ -511,7 +513,7 @@ function styleSheet(ws, rows) {
     if (ws[address]) ws[address].s = headerStyle;
   }
   rows.slice(1).forEach((row, rowIndex) => {
-    const style = row[2] === IMP ? impeditivoStyle : row[2] === ACE ? atencaoStyle : null;
+    const style = row[2] === IMP || row[2] === 'PRIORITÁRIO' ? impeditivoStyle : row[2] === ACE || row[2] === 'SECUNDÁRIO' ? atencaoStyle : null;
     if (!style) return;
     for (let column = 0; column < columns; column++) {
       const address = XLSX.utils.encode_cell({ r: rowIndex + 1, c: column });
