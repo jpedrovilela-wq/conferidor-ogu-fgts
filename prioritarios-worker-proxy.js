@@ -1,4 +1,4 @@
-importScripts('prioritarios-worker.js?v=8');
+importScripts('prioritarios-worker.js?v=9');
 
 const baseHandler = self.onmessage;
 const send = self.postMessage.bind(self);
@@ -88,7 +88,7 @@ function crossLine(rule, subject, line) {
 function detailedRules(agent, subject, hasCompanion) {
   const modality = agent === 'caixa' ? 'FAR, RURAL ou ENTIDADES.' : 'FAR ou RURAL.';
   const common = [
-    ['Estrutura', 'Os cabeçalhos obrigatórios devem existir e corresponder ao tipo de tabela e ao agente financeiro selecionados.', 'IMPEDITIVO'],
+    ['Estrutura', 'Em Empreendimentos, o arquivo pode conter qualquer subconjunto ou extensão do espectro de 52 colunas. Cabeçalhos ausentes são informados como ocorrência SECUNDÁRIA, sem impedir o processamento.', 'ATENÇÃO'],
     ['Data de Movimento', 'Deve ser uma data válida e ter o mesmo valor em todas as linhas da tabela analisada.', 'IMPEDITIVO'],
     ['Agente Financeiro; APF', `O agente financeiro deve coincidir com a seleção. APF deve conter apenas algarismos${subject === 'empreendimentos' ? ' e não pode se repetir.' : '.'}`, 'IMPEDITIVO']
   ];
@@ -140,6 +140,16 @@ function rebuild(message) {
   message.atencoes = atencoes;
 }
 
+function headerWarning(raw, subject, source) {
+  if (subject !== 'empreendimentos') return null;
+  const expected = [...(self.PRIORITARIOS_ENTERPRISE_HEADERS || []), ...(self.PRIORITARIOS_CAIXA_EXTRA_HEADERS || [])];
+  const received = new Set((raw?.[0] || []).map(canonical));
+  const missing = expected.filter(header => !received.has(canonical(header)));
+  if (!missing.length) return null;
+  const found = expected.length - missing.length;
+  return [source, '', 'Arquivo possui menos colunas do que o espectro esperado para Empreendimentos.', 'ATENÇÃO', `${found} de ${expected.length} colunas do espectro foram identificadas.`, `Colunas ausentes: ${missing.join('; ')}.`];
+}
+
 function revise(message) {
   if (message.type !== 'complete' || !requestData?.primary) return message;
   const info = sourceMap(requestData.primary, requestData.agente);
@@ -189,6 +199,11 @@ function revise(message) {
     row[0] = crossLine(row[2], requestData.assunto, row[0]);
     revised.push(row);
   }
+  const primaryWarning = headerWarning(requestData.primary, requestData.assunto, 'Arquivo principal — cabeçalho');
+  const complementarySubject = requestData.assunto === 'empreendimentos' ? 'entregas' : 'empreendimentos';
+  const complementaryWarning = requestData.companion ? headerWarning(requestData.companion, complementarySubject, 'Arquivo complementar — cabeçalho') : null;
+  if (primaryWarning) revised.push(primaryWarning);
+  if (complementaryWarning) revised.push(complementaryWarning);
   message.rows = revised;
   rebuild(message);
   return message;
